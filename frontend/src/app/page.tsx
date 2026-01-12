@@ -112,10 +112,10 @@ export default function Dashboard() {
                 <p className="text-[10px] mono opacity-50 group-hover:text-high-vis-yellow transition-colors">GVM SYS</p>
                 <p className="font-bold text-sm">Payload Scientist</p>
               </Link>
-              <div className="p-4 bg-white/5 rounded border border-white/10 hover:border-blue-500 transition-all cursor-pointer opacity-50">
-                <p className="text-[10px] mono opacity-50">LOGBOOK</p>
-                <p className="font-bold text-sm">Iron-Log</p>
-              </div>
+              <Link href="/engine-health" className="p-4 bg-white/5 rounded border border-white/10 hover:border-blue-500 transition-all group">
+                <p className="text-[10px] mono opacity-50 group-hover:text-blue-500 transition-colors">HEALTH</p>
+                <p className="font-bold text-sm">Engine Health</p>
+              </Link>
               <div className="p-4 bg-white/5 rounded border border-white/10 hover:border-green-500 transition-all cursor-pointer opacity-50">
                 <p className="text-[10px] mono opacity-50">PARTS</p>
                 <p className="font-bold text-sm">Registry</p>
