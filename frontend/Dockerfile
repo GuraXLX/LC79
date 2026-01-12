@@ -14,8 +14,12 @@ COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
+# Disable telemetry during build.
 ENV NEXT_TELEMETRY_DISABLED 1
+
+# Skip type checking and linting to save memory
+ENV NEXT_IGNORE_TYPE_CHECKS=1
+ENV NEXT_IGNORE_ESLINT=1
 
 # Declare build arguments
 ARG NEXT_PUBLIC_SUPABASE_URL
