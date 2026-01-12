@@ -12,6 +12,13 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Post('check-email')
+  async checkEmail(@Body('email') email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) return { found: false };
+    return { found: true, role: user.role, id: user.id, name: user.name };
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();

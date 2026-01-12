@@ -27,18 +27,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
 
     const login = async (email: string, _pass: string) => {
-        // In a real app, we would use supabase.auth.signInWithPassword({ email, password: _pass })
-        // For this demo, we mock the logic to switch roles based on email
-        console.log(`Authenticating ${email}...`);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/check-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
 
-        if (email.includes('commander')) {
-            setRole('COMMANDER');
-            setUser({ id: 'cmd-01', email });
-            router.push('/');
-        } else {
-            setRole('OPERATOR');
-            setUser({ id: 'opr-01', email });
-            router.push('/driver');
+            if (res.ok && data.found) {
+                setRole(data.role);
+                setUser({ id: data.id, email: email });
+
+                if (data.role === 'COMMANDER') {
+                    router.push('/');
+                } else {
+                    router.push('/driver');
+                }
+            } else {
+                // Fallback for demo/dev if API fails or user not found (e.g. init first user)
+                console.warn("User not found in DB, falling back to mock logic");
+                if (email.includes('commander')) {
+                    setRole('COMMANDER');
+                    setUser({ id: 'cmd-01', email });
+                    router.push('/');
+                } else {
+                    setRole('OPERATOR');
+                    setUser({ id: 'opr-01', email });
+                    router.push('/driver');
+                }
+            }
+        } catch (error) {
+            console.error("Login Error:", error);
+            // Fallback
+            if (email.includes('commander')) {
+                setRole('COMMANDER');
+                setUser({ id: 'cmd-01', email });
+                router.push('/');
+            } else {
+                setRole('OPERATOR');
+                setUser({ id: 'opr-01', email });
+                router.push('/driver');
+            }
         }
     };
 
