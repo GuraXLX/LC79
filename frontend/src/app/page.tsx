@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Plus, Car, Users, Fuel, FileText, Settings, Globe } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { useLanguage } from '@/context/language-context';
 
@@ -44,13 +45,21 @@ export default function FleetDashboard() {
   const { t, language, setLanguage } = useLanguage();
   const { user, role, logout } = useAuth();
   const [vehicles, setVehicles] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/vehicles`)
       .then(res => res.json())
       .then(data => setVehicles(data))
       .catch(err => console.error(err));
-  }, []);
+  }, [user, router]);
+
+  if (!user) return null; // Prevent flash of content
 
   const toggleLanguage = () => {
     setLanguage(language === 'EN' ? 'SI' : 'EN');
