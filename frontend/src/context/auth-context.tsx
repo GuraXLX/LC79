@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_CONFIG } from '../supabase-config';
 
 type UserRole = 'COMMANDER' | 'OPERATOR';
 
@@ -17,7 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<UserRole>('OPERATOR');
     const [user, setUser] = useState<any>(null);
-    const supabase = createClientComponentClient();
+    const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
     useEffect(() => {
         // Simulated auth check - in production would use supabase.auth.getSession()
