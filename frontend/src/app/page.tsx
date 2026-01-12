@@ -138,19 +138,20 @@ export default function FleetDashboard() {
               </div>
 
               {/* Actions */}
+              {/* Actions */}
               <div className="grid grid-cols-3 gap-2 pt-2">
-                <button className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
+                <Link href={`/vehicle/${v.id}`} className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
                   <Fuel size={16} className="text-gray-400 group-hover:text-white" />
                   <span className="text-[8px] font-bold uppercase tracking-widest">Add Fuel</span>
-                </button>
-                <button className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
+                </Link>
+                <Link href={`/vehicle/${v.id}`} className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
                   <FileText size={16} className="text-gray-400 group-hover:text-white" />
                   <span className="text-[8px] font-bold uppercase tracking-widest">Docs</span>
-                </button>
-                <button className="py-3 bg-heritage-red/10 border border-heritage-red/30 hover:bg-heritage-red/20 rounded flex flex-col items-center justify-center gap-1 group text-heritage-red">
+                </Link>
+                <Link href={`/vehicle/${v.id}`} className="py-3 bg-heritage-red/10 border border-heritage-red/30 hover:bg-heritage-red/20 rounded flex flex-col items-center justify-center gap-1 group text-heritage-red">
                   <Settings size={16} />
                   <span className="text-[8px] font-bold uppercase tracking-widest">Manage</span>
-                </button>
+                </Link>
               </div>
             </div>
 
