@@ -8,7 +8,7 @@ export class ModificationsService {
   constructor(private prisma: PrismaService) { }
 
   async create(createModificationDto: CreateModificationDto) {
-    return this.prisma.modification.create({
+    return (this.prisma as any).modification.create({
       data: {
         vehicle_id: createModificationDto.vehicle_id,
         name: createModificationDto.name,
@@ -22,27 +22,27 @@ export class ModificationsService {
   }
 
   async findAll(vehicleId?: string) {
-    return this.prisma.modification.findMany({
+    return (this.prisma as any).modification.findMany({
       where: vehicleId ? { vehicle_id: vehicleId } : {},
       orderBy: { installed_at: 'desc' },
     });
   }
 
   async findOne(id: string) {
-    return this.prisma.modification.findUnique({
+    return (this.prisma as any).modification.findUnique({
       where: { id },
     });
   }
 
   async update(id: string, updateModificationDto: UpdateModificationDto) {
-    return this.prisma.modification.update({
+    return (this.prisma as any).modification.update({
       where: { id },
       data: updateModificationDto,
     });
   }
 
   async remove(id: string) {
-    return this.prisma.modification.delete({
+    return (this.prisma as any).modification.delete({
       where: { id },
     });
   }
