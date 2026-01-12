@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #121212;
+  --surface-elevated: #2C2C2C;
+  --heritage-red: #E11C21;
+  --high-vis-yellow: #FFD600;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Glove Mode Multipliers */
+  --touch-target-size: 44px;
+  --ui-spacing: 1rem;
+}
+
+[data-glove-mode="true"] {
+  --touch-target-size: 62px;
+  --ui-spacing: 1.5rem;
+  --font-scale: 1.2;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Tactical Industrial Glassmorphism */
+.tactical-card {
+  background: rgba(44, 44, 44, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: var(--ui-spacing);
+}
+
+.heritage-button {
+  background-color: var(--heritage-red);
+  color: white;
+  height: var(--touch-target-size);
+  padding: 0 1.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.heritage-button:active {
+  transform: scale(0.95);
+  background-color: #b3161a;
+}
+
+.high-vis-alert {
+  background-color: var(--high-vis-yellow);
+  color: black;
+  padding: 0.5rem 1rem;
+  font-weight: 800;
+  border-left: 8px solid black;
+}
+
+/* Night Mode Red-Shift Filter */
+.night-mode-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(225, 28, 33, 0.15);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: multiply;
+}
