@@ -1,16 +1,23 @@
 -- SQL Migration for Supabase / PostgreSQL
 -- Targets: LC79 VMS Initial Schema
 
--- Enable TimescaleDB extension if available (optional for standard Postgres)
--- CREATE EXTENSION IF NOT EXISTS timescaledb;
+-- ENUMS (Safe check to allow re-running migration)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'Role') THEN
+        CREATE TYPE "Role" AS ENUM ('COMMANDER', 'OPERATOR');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'OCRCategory') THEN
+        CREATE TYPE "OCRCategory" AS ENUM ('FUEL_RECEIPT', 'REVENUE_LICENSE', 'INSURANCE_POLICY', 'EMISSION_CERT', 'SERVICE_INVOICE', 'PART_ORDER');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'SyncStatus') THEN
+        CREATE TYPE "SyncStatus" AS ENUM ('PENDING', 'SYNCED', 'FAILED');
+    END IF;
+END
+$$;
 
--- ENUMS
-CREATE TYPE "Role" AS ENUM ('COMMANDER', 'OPERATOR');
-CREATE TYPE "OCRCategory" AS ENUM ('FUEL_RECEIPT', 'REVENUE_LICENSE', 'INSURANCE_POLICY', 'EMISSION_CERT', 'SERVICE_INVOICE', 'PART_ORDER');
-CREATE TYPE "SyncStatus" AS ENUM ('PENDING', 'SYNCED', 'FAILED');
-
--- USERS
-CREATE TABLE "User" (
+-- USERS (Safe check with IF NOT EXISTS for tables)
+CREATE TABLE IF NOT EXISTS "User" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "email" TEXT UNIQUE NOT NULL,
     "name" TEXT NOT NULL,
@@ -22,7 +29,7 @@ CREATE TABLE "User" (
 );
 
 -- VEHICLES
-CREATE TABLE "Vehicle" (
+CREATE TABLE IF NOT EXISTS "Vehicle" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "nickname" TEXT,
     "vin" TEXT UNIQUE NOT NULL,
@@ -35,7 +42,7 @@ CREATE TABLE "Vehicle" (
 );
 
 -- OCR RECORDS
-CREATE TABLE "OCRRecord" (
+CREATE TABLE IF NOT EXISTS "OCRRecord" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "vehicle_id" UUID REFERENCES "Vehicle"("id"),
     "user_id" UUID REFERENCES "User"("id"),
@@ -50,7 +57,7 @@ CREATE TABLE "OCRRecord" (
 );
 
 -- FUEL LOGS
-CREATE TABLE "FuelLog" (
+CREATE TABLE IF NOT EXISTS "FuelLog" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "vehicle_id" UUID REFERENCES "Vehicle"("id"),
     "date" TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -64,7 +71,7 @@ CREATE TABLE "FuelLog" (
 );
 
 -- SERVICE LOGS
-CREATE TABLE "ServiceLog" (
+CREATE TABLE IF NOT EXISTS "ServiceLog" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "vehicle_id" UUID REFERENCES "Vehicle"("id"),
     "date" TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -78,7 +85,7 @@ CREATE TABLE "ServiceLog" (
 );
 
 -- DOCUMENTS
-CREATE TABLE "Document" (
+CREATE TABLE IF NOT EXISTS "Document" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "vehicle_id" UUID REFERENCES "Vehicle"("id"),
     "type" TEXT NOT NULL,
@@ -88,7 +95,7 @@ CREATE TABLE "Document" (
 );
 
 -- TRIPS (TELEMETRY)
-CREATE TABLE "Trip" (
+CREATE TABLE IF NOT EXISTS "Trip" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "vehicle_id" UUID REFERENCES "Vehicle"("id"),
     "user_id" UUID REFERENCES "User"("id"),
