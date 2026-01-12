@@ -30,14 +30,14 @@ export default function LoginPage() {
         <div className="min-h-screen bg-[#050505] flex flex-col md:flex-row font-sans overflow-hidden">
 
             {/* Left Panel - Visuals */}
-            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('https://images.unsplash.com/photo-1533473359331-0135ef1bcfb0?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center">
+            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('/login-bg.png')] bg-cover bg-center">
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
                 <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20"></div>
 
                 <div className="relative z-10 h-full flex flex-col justify-between p-12 text-white">
                     <div className="animate-fade-in-down">
                         <h1 className="text-6xl font-black italic tracking-tighter mb-2">
-                            LC79 <span className="text-heritage-red">VMS</span>
+                            VANGUARD <span className="text-heritage-red">FLEET</span>
                         </h1>
                         <p className="font-mono text-sm opacity-60 tracking-[0.3em] uppercase">Tactical Fleet Command</p>
                     </div>
