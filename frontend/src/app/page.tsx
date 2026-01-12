@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/auth-context';
 
 export default function Dashboard() {
   const [gloveMode, setGloveMode] = useState(false);
   const [nightMode, setNightMode] = useState(false);
+  const [monsoonMode, setMonsoonMode] = useState(false);
+  const { role, setRole, isCommander } = useAuth();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-glove-mode', gloveMode.toString());
@@ -14,26 +17,35 @@ export default function Dashboard() {
   return (
     <main className={`min-h-screen p-8 transition-colors duration-500`}>
       {nightMode && <div className="night-mode-overlay" />}
+      {monsoonMode && <div className="absolute inset-0 pointer-events-none bg-blue-500/5 z-0" />}
 
       {/* Header Section */}
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 relative z-10">
         <div>
           <h1 className="text-4xl font-extrabold italic tracking-tighter">LC79 TACTICAL <span className="text-heritage-red">VMS</span></h1>
-          <p className="text-secondary mono uppercase tracking-widest text-xs mt-1">Status: Operational // Sri Lanka District: Colombo</p>
+          <p className="text-secondary mono uppercase tracking-widest text-xs mt-1">
+            Status: Operational // Zone: {monsoonMode ? 'HIGH-RAIN HAZARD' : 'DRY ZONE'}
+          </p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
+          <button
+            onClick={() => setRole(role === 'COMMANDER' ? 'OPERATOR' : 'COMMANDER')}
+            className="tactical-card px-4 py-2 border border-white/10 text-[10px] mono"
+          >
+            ROLE: {role}
+          </button>
+          <button
+            onClick={() => setMonsoonMode(!monsoonMode)}
+            className={`tactical-card px-4 py-3 border-2 transition-all ${monsoonMode ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-white/10 text-secondary'}`}
+          >
+            <span className="mono text-xs font-bold uppercase">Monsoon Mode: {monsoonMode ? 'ON' : 'OFF'}</span>
+          </button>
           <button
             onClick={() => setGloveMode(!gloveMode)}
             className={`tactical-card px-6 py-3 border-2 transition-all ${gloveMode ? 'border-high-vis-yellow bg-high-vis-yellow/10' : 'border-white/10'}`}
           >
-            <span className={`mono text-xs font-bold ${gloveMode ? 'text-high-vis-yellow' : 'text-secondary'}`}>GLOVE MODE: {gloveMode ? 'ON' : 'OFF'}</span>
-          </button>
-          <button
-            onClick={() => setNightMode(!nightMode)}
-            className={`tactical-card px-6 py-3 border-2 transition-all ${nightMode ? 'border-heritage-red bg-heritage-red/10' : 'border-white/10'}`}
-          >
-            <span className={`mono text-xs font-bold ${nightMode ? 'text-heritage-red' : 'text-secondary'}`}>NIGHT MODE: {nightMode ? 'ON' : 'OFF'}</span>
+            <span className={`mono text-xs font-bold ${gloveMode ? 'text-high-vis-yellow' : 'text-secondary'}`}>GLOVE: {gloveMode ? 'ON' : 'OFF'}</span>
           </button>
         </div>
       </header>
