@@ -110,3 +110,10 @@ CREATE TABLE IF NOT EXISTS "Trip" (
 
 -- Convert Trip to a hypertable if TimescaleDB is installed
 -- SELECT create_hypertable('"Trip"', 'start_time');
+
+-- SEED DEMO USERS
+INSERT INTO "User" ("email", "name", "password_hash", "role", "preferences")
+VALUES 
+('kushan@offroad.lk', 'Kushan (Commander)', 'demo123', 'COMMANDER', '{"glove_mode": false, "night_mode": false}'),
+('udaya@offroad.lk', 'Udaya (Driver)', 'demo123', 'OPERATOR', '{"glove_mode": true, "night_mode": false}')
+ON CONFLICT ("email") DO UPDATE SET "role" = EXCLUDED."role", "name" = EXCLUDED."name";
