@@ -27,6 +27,7 @@ model User {
   updated_at    DateTime  @updatedAt
   scans         OCRRecord[]
   trips         Trip[]
+  assigned_vehicles Vehicle[] @relation("VehicleDriver")
 }
 
 /// --- VEHICLE ---

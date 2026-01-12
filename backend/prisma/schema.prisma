@@ -27,6 +27,7 @@ model User {
   updated_at    DateTime  @updatedAt
   scans         OCRRecord[]
   trips         Trip[]
+  assigned_vehicles Vehicle[] @relation("VehicleDriver")
 }
 
 /// --- VEHICLE ---
@@ -41,6 +42,8 @@ model Vehicle {
   curb_weight_kg    Float     @default(2200)
   odometer_km       Float     @default(0)
   engine_hours      Float     @default(0)
+  assigned_driver_id String?
+  assigned_driver   User?     @relation("VehicleDriver", fields: [assigned_driver_id], references: [id])
   documents         Document[]
   scans             OCRRecord[]
   fuel_logs         FuelLog[]
