@@ -36,9 +36,12 @@ export default function LoginPage() {
 
                 <div className="relative z-10 h-full flex flex-col justify-between p-12 text-white">
                     <div className="animate-fade-in-down">
-                        <h1 className="text-6xl font-black italic tracking-tighter mb-2">
-                            VANGUARD <span className="text-heritage-red">FLEET</span>
-                        </h1>
+                        <div className="flex items-center gap-4 mb-2">
+                            <img src="/logo.png" alt="Vanguard" className="w-16 h-16 object-contain" />
+                            <h1 className="text-6xl font-black italic tracking-tighter">
+                                VANGUARD
+                            </h1>
+                        </div>
                         <p className="font-mono text-sm opacity-60 tracking-[0.3em] uppercase">Tactical Fleet Command</p>
                     </div>
 
