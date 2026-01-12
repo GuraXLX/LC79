@@ -10,6 +10,7 @@ RUN npm install
 
 COPY . .
 
+COPY prisma ./prisma
 RUN npx prisma generate
 
 RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build
