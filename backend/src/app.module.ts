@@ -9,6 +9,9 @@ import { FuelService } from './fuel/fuel.service';
 import { TripService } from './trip/trip.service';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { UsersModule } from './users/users.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { FuelLogsModule } from './fuel-logs/fuel-logs.module';
+import { ServiceLogsModule } from './service-logs/service-logs.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { UsersModule } from './users/users.module';
     ServiceHorizonModule,
     VehiclesModule,
     UsersModule,
+    PrismaModule,
+    FuelLogsModule,
+    ServiceLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService, FuelService, TripService],

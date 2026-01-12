@@ -12,13 +12,44 @@ export default function LogService() {
     const { t } = useLanguage();
     const [loading, setLoading] = useState(false);
 
+    const [formData, setFormData] = useState({
+        date: new Date().toISOString().split('T')[0],
+        odometer: '',
+        service_type: 'Routine Maintenance (Oil/Filter)',
+        station_name: '',
+        notes: '',
+        total_lkr: ''
+    });
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
+
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/service-logs`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    vehicle_id: params.id,
+                    date: formData.date,
+                    odometer: parseFloat(formData.odometer),
+                    service_type: formData.service_type,
+                    parts_source: formData.station_name || 'Service Center', // Mapping station to source for now
+                    notes: formData.notes,
+                    total_lkr: parseFloat(formData.total_lkr)
+                })
+            });
+
+            if (!res.ok) throw new Error('Failed to log service');
+
+            alert('✅ Service Logged!');
             router.push(`/vehicle/${params.id}`);
-        }, 1500);
+        } catch (error) {
+            console.error(error);
+            alert('❌ Failed to save record');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -42,14 +73,27 @@ export default function LogService() {
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('date')}</label>
                                 <div className="relative">
                                     <Calendar className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                    <input type="date" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono" defaultValue={new Date().toISOString().split('T')[0]} />
+                                    <input
+                                        type="date"
+                                        required
+                                        value={formData.date}
+                                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono"
+                                    />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('currentOdo')}</label>
                                 <div className="relative">
                                     <Hash className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                    <input type="number" placeholder="150000" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono" />
+                                    <input
+                                        type="number"
+                                        placeholder="150000"
+                                        required
+                                        value={formData.odometer}
+                                        onChange={(e) => setFormData({ ...formData, odometer: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -58,7 +102,11 @@ export default function LogService() {
                             <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Service Type</label>
                             <div className="relative">
                                 <Wrench className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                <select className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none appearance-none font-bold uppercase">
+                                <select
+                                    value={formData.service_type}
+                                    onChange={(e) => setFormData({ ...formData, service_type: e.target.value })}
+                                    className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none appearance-none font-bold uppercase"
+                                >
                                     <option>Routine Maintenance (Oil/Filter)</option>
                                     <option>Start-Up Check (Pre-Trip)</option>
                                     <option>Major Service (Timing/Trans)</option>
@@ -72,20 +120,38 @@ export default function LogService() {
                             <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Service Center</label>
                             <div className="relative">
                                 <MapPin className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                <input type="text" placeholder="e.g. Toyota Lanka - Wattala" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase" />
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Toyota Lanka - Wattala"
+                                    value={formData.station_name}
+                                    onChange={(e) => setFormData({ ...formData, station_name: e.target.value })}
+                                    className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase"
+                                />
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Description / Notes</label>
-                            <textarea placeholder="List replaced parts or specific issues..." className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-mono text-sm h-32"></textarea>
+                            <textarea
+                                placeholder="List replaced parts or specific issues..."
+                                value={formData.notes}
+                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-mono text-sm h-32"
+                            ></textarea>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('cost')} (LKR)</label>
                             <div className="relative">
                                 <DollarSign className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                <input type="number" placeholder="45000" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono text-xl font-bold text-heritage-red" />
+                                <input
+                                    type="number"
+                                    placeholder="45000"
+                                    required
+                                    value={formData.total_lkr}
+                                    onChange={(e) => setFormData({ ...formData, total_lkr: e.target.value })}
+                                    className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-mono text-xl font-bold text-heritage-red"
+                                />
                             </div>
                         </div>
 
