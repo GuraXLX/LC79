@@ -1,17 +1,20 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { SUPABASE_CONFIG } from '../supabase-config';
+import { createContext, useContext, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type UserRole = 'COMMANDER' | 'OPERATOR';
 
-import { useRouter } from 'next/navigation';
+interface User {
+    id: string;
+    email: string;
+}
 
 interface AuthContextType {
     role: UserRole;
-    user: any;
+    user: User | null;
     login: (email: string, pass: string) => Promise<void>;
+    logout: () => void;
     setRole: (role: UserRole) => void;
     isCommander: boolean;
 }
@@ -20,12 +23,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<UserRole>('OPERATOR');
-    const [user, setUser] = useState<any>(null);
-    const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
-    const login = async (email: string, pass: string) => {
-        // In a real app, we would use supabase.auth.signInWithPassword({ email, password: pass })
+    const login = async (email: string, _pass: string) => {
+        // In a real app, we would use supabase.auth.signInWithPassword({ email, password: _pass })
         // For this demo, we mock the logic to switch roles based on email
         console.log(`Authenticating ${email}...`);
 
@@ -40,8 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push('/');
     };
 
+    const logout = () => {
+        setUser(null);
+        setRole('OPERATOR');
+        router.push('/login');
+    };
+
     return (
-        <AuthContext.Provider value={{ role, user, login, setRole, isCommander: role === 'COMMANDER' }}>
+        <AuthContext.Provider value={{ role, user, login, logout, setRole, isCommander: role === 'COMMANDER' }}>
             {children}
         </AuthContext.Provider>
     );

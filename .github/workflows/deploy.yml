@@ -1,0 +1,35 @@
+name: Deploy to DigitalOcean Droplet
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USER }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          script: |
+            # Only clone if the directory doesn't exist
+            if [ ! -d "/root/lc79-vms" ]; then
+              git clone https://github.com/GuraXLX/LC79.git /root/lc79-vms
+            fi
+            
+            cd /root/lc79-vms
+            
+            # Pull the latest changes
+            git pull origin main
+            
+            # Stop any existing containers to free up ports
+            docker-compose down
+            
+            # Rebuild and start the containers
+            docker-compose up -d --build

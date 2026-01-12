@@ -11,6 +11,7 @@ export const tripApi = {
     start: (data: { vehicle_id: string; user_id: string; start_odometer: number }) =>
         api.post('/trip', data),
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     end: (id: string, data: any) =>
         api.patch(`/trip/${id}`, data), // Assuming PATCH/PUT for end
 };

@@ -2,9 +2,11 @@ import './globals.css';
 import { AuthProvider } from '@/context/auth-context';
 
 export const metadata = {
-  title: 'LC79 Tactical VMS',
-  description: 'Industrial-grade vehicle management for Sri Lanka',
+  title: 'VANGUARD FLEET',
+  description: 'Premium Fleet Command & Control System',
 };
+
+import { LanguageProvider } from '@/context/language-context';
 
 export default function RootLayout({
   children,
@@ -13,9 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <AuthProvider>
-          {children}
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

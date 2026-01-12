@@ -2,15 +2,18 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Car, Users, Fuel, FileText, ChevronRight, Settings } from 'lucide-react';
+import { Plus, Car, Users, Fuel, FileText, Settings, Globe } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/auth-context';
+import { useLanguage } from '@/context/language-context';
 
 // Mock Data for Demo
 const VEHICLES = [
   {
     id: 'v1',
     name: 'LC79 "IRON HIDE"',
+    nickname: 'BLAZE',
     make: 'Toyota',
     model: 'Land Cruiser 79 Single Cab',
     year: 2024,
@@ -24,6 +27,7 @@ const VEHICLES = [
   {
     id: 'v2',
     name: 'FAMILY SUV',
+    nickname: 'FAMILY BUS',
     make: 'Toyota',
     model: 'Prado 150',
     year: 2018,
@@ -37,22 +41,64 @@ const VEHICLES = [
 ];
 
 export default function FleetDashboard() {
-  const { role } = useAuth();
-  const [vehicles, setVehicles] = useState(VEHICLES);
+  const { t, language, setLanguage } = useLanguage();
+  const { user, role, logout } = useAuth();
+  const [vehicles] = useState(VEHICLES);
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'EN' ? 'SI' : 'EN');
+  };
 
   return (
     <main className="min-h-screen bg-[#050505] text-white font-sans p-6 md:p-12">
       {/* Header */}
-      <header className="flex justify-between items-end mb-12 border-b border-white/10 pb-6">
-        <div>
-          <h1 className="text-4xl font-black italic tracking-tighter mb-2">MY <span className="text-heritage-red">FLEET</span></h1>
-          <p className="font-mono text-sm text-gray-500 uppercase tracking-widest">
-            {role === 'COMMANDER' ? 'COMMANDER MODE // ADMIN ACCESS' : 'OPERATOR VIEW'}
-          </p>
+      <header className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 border-b border-white/10 pb-6 gap-6 md:gap-0">
+        <div className="flex items-center gap-6">
+          {/* Logo */}
+          <div className="relative w-16 h-16">
+            <Image src="/logo.png" alt="Vanguard Logo" fill className="object-contain" />
+          </div>
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-1 relative">
+              {t('appTitle')} <span className="text-heritage-red text-2xl absolute top-0 -right-6">®</span>
+            </h1>
+            <div className="flex items-center gap-3">
+              <p className="font-mono text-[10px] md:text-xs text-heritage-red font-bold uppercase tracking-[0.3em] pl-1">
+                {t('appSubtitle')}
+              </p>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${role === 'COMMANDER' ? 'bg-heritage-red text-white' : 'bg-blue-600 text-white'}`}>
+                {role === 'COMMANDER' ? t('commanderMode') : t('operatorView')}
+              </span>
+            </div>
+          </div>
         </div>
-        <button className="bg-heritage-red hover:bg-[#b3161a] text-white px-6 py-3 rounded font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(225,28,33,0.3)]">
-          <Plus size={18} /> Add Vehicle
-        </button>
+
+        <div className="flex items-center gap-4 w-full md:w-auto justify-center md:justify-end">
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded hover:bg-white/5 transition-all text-xs font-mono font-bold"
+          >
+            <Globe size={14} /> {language === 'EN' ? 'සිංහල' : 'ENGLISH'}
+          </button>
+
+          <button
+            onClick={logout}
+            className="px-4 py-2 border border-white/10 rounded hover:bg-red-900/20 hover:text-red-400 transition-all text-xs font-mono font-bold uppercase"
+          >
+            Log Out
+          </button>
+
+          {role === 'COMMANDER' && (
+            <>
+              <Link href="/settings" className="px-4 py-2 border border-white/10 rounded hover:bg-white/10 transition-all text-white flex items-center gap-2">
+                <Settings size={18} /> <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Settings</span>
+              </Link>
+              <Link href="/vehicle/add" className="bg-heritage-red hover:bg-[#b3161a] text-white px-6 py-3 rounded font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(225,28,33,0.3)]">
+                <Plus size={18} /> {t('addVehicle')}
+              </Link>
+            </>
+          )}
+        </div>
       </header>
 
       {/* Stats Grid */}
@@ -60,22 +106,22 @@ export default function FleetDashboard() {
         <div className="bg-white/5 border border-white/10 p-6 rounded hover:border-white/20 transition-all">
           <Car className="text-heritage-red mb-2" size={24} />
           <p className="text-2xl font-black">02</p>
-          <p className="text-[10px] font-mono opacity-50 uppercase">Total Vehicles</p>
+          <p className="text-[10px] font-mono opacity-50 uppercase">{t('totalVehicles')}</p>
         </div>
         <div className="bg-white/5 border border-white/10 p-6 rounded hover:border-white/20 transition-all">
           <Users className="text-high-vis-yellow mb-2" size={24} />
           <p className="text-2xl font-black">01</p>
-          <p className="text-[10px] font-mono opacity-50 uppercase">Active Drivers</p>
+          <p className="text-[10px] font-mono opacity-50 uppercase">{t('activeDrivers')}</p>
         </div>
         <div className="bg-white/5 border border-white/10 p-6 rounded hover:border-white/20 transition-all">
           <FileText className="text-blue-500 mb-2" size={24} />
           <p className="text-2xl font-black">OK</p>
-          <p className="text-[10px] font-mono opacity-50 uppercase">Doc Compliance</p>
+          <p className="text-[10px] font-mono opacity-50 uppercase">{t('docCompliance')}</p>
         </div>
         <div className="bg-white/5 border border-white/10 p-6 rounded hover:border-white/20 transition-all">
           <Fuel className="text-green-500 mb-2" size={24} />
           <p className="text-2xl font-black">54k</p>
-          <p className="text-[10px] font-mono opacity-50 uppercase">Mnthly Fuel (LKR)</p>
+          <p className="text-[10px] font-mono opacity-50 uppercase">{t('monthlyFuel')}</p>
         </div>
       </div>
 
@@ -97,7 +143,7 @@ export default function FleetDashboard() {
                 </span>
               </div>
               <div className="absolute bottom-4 left-6">
-                <h2 className="text-2xl font-black italic uppercase tracking-tight">{v.name}</h2>
+                <h2 className="text-2xl font-black italic uppercase tracking-tight">{v.nickname}</h2>
                 <p className="text-xs font-mono opacity-70">{v.year} {v.make} {v.model}</p>
               </div>
             </div>
@@ -107,11 +153,11 @@ export default function FleetDashboard() {
               {/* Key Details */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-[10px] font-mono opacity-40 uppercase">License Plate</p>
+                  <p className="text-[10px] font-mono opacity-40 uppercase">{t('licensePlate')}</p>
                   <p className="font-bold font-mono">{v.plate}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-mono opacity-40 uppercase">Assigned Driver</p>
+                  <p className="text-[10px] font-mono opacity-40 uppercase">{t('assignedDriver')}</p>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-white/20"></div>
                     <p className="font-bold">{v.driver}</p>
@@ -122,7 +168,7 @@ export default function FleetDashboard() {
               {/* Fuel & Service */}
               <div className="space-y-3">
                 <div className="flex justify-between text-xs">
-                  <span className="font-mono opacity-50">FUEL LEVEL</span>
+                  <span className="font-mono opacity-50">{t('fuelLevel')}</span>
                   <span className="font-bold">{v.fuel}%</span>
                 </div>
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
@@ -132,25 +178,24 @@ export default function FleetDashboard() {
                   ></div>
                 </div>
                 <div className="flex justify-between items-center text-[10px] pt-1">
-                  <span className="opacity-40">NEXT SERVICE IN</span>
+                  <span className="opacity-40">{t('nextServiceIn')}</span>
                   <span className="text-high-vis-yellow font-bold font-mono">{v.nextService}</span>
                 </div>
               </div>
 
               {/* Actions */}
-              {/* Actions */}
               <div className="grid grid-cols-3 gap-2 pt-2">
                 <Link href={`/vehicle/${v.id}`} className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
                   <Fuel size={16} className="text-gray-400 group-hover:text-white" />
-                  <span className="text-[8px] font-bold uppercase tracking-widest">Add Fuel</span>
+                  <span className="text-[8px] font-bold uppercase tracking-widest">{t('addFuel')}</span>
                 </Link>
                 <Link href={`/vehicle/${v.id}`} className="py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded flex flex-col items-center justify-center gap-1 group">
                   <FileText size={16} className="text-gray-400 group-hover:text-white" />
-                  <span className="text-[8px] font-bold uppercase tracking-widest">Docs</span>
+                  <span className="text-[8px] font-bold uppercase tracking-widest">{t('docs')}</span>
                 </Link>
                 <Link href={`/vehicle/${v.id}`} className="py-3 bg-heritage-red/10 border border-heritage-red/30 hover:bg-heritage-red/20 rounded flex flex-col items-center justify-center gap-1 group text-heritage-red">
                   <Settings size={16} />
-                  <span className="text-[8px] font-bold uppercase tracking-widest">Manage</span>
+                  <span className="text-[8px] font-bold uppercase tracking-widest">{t('manage')}</span>
                 </Link>
               </div>
             </div>
@@ -159,10 +204,12 @@ export default function FleetDashboard() {
         ))}
 
         {/* Add New Placeholder */}
-        <button className="border-2 border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center gap-4 text-white/20 hover:text-heritage-red hover:border-heritage-red/40 hover:bg-heritage-red/5 transition-all min-h-[400px]">
-          <Plus size={48} />
-          <span className="font-black italic text-xl uppercase">Register Vehicle</span>
-        </button>
+        {role === 'COMMANDER' && (
+          <Link href="/vehicle/add" className="border-2 border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center gap-4 text-white/20 hover:text-heritage-red hover:border-heritage-red/40 hover:bg-heritage-red/5 transition-all min-h-[400px]">
+            <Plus size={48} />
+            <span className="font-black italic text-xl uppercase">{t('registerVehicle')}</span>
+          </Link>
+        )}
       </div>
 
     </main>

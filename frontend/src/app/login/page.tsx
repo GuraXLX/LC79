@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/auth-context';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, ChevronRight, Lock, User } from 'lucide-react';
 
 export default function LoginPage() {
@@ -11,6 +10,12 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const [activeTab, setActiveTab] = useState<'COMMANDER' | 'OPERATOR'>('OPERATOR');
+    const [sessionId, setSessionId] = useState('');
+
+    useEffect(() => {
+        // eslint-disable-next-line
+        setSessionId(Math.random().toString(36).substr(2, 9).toUpperCase());
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,8 +75,8 @@ export default function LoginPage() {
                         <button
                             onClick={() => setActiveTab('OPERATOR')}
                             className={`py-3 text-xs font-bold uppercase tracking-wider transition-all rounded ${activeTab === 'OPERATOR'
-                                    ? 'bg-white text-black shadow-lg scale-[1.02]'
-                                    : 'text-gray-500 hover:text-white'
+                                ? 'bg-white text-black shadow-lg scale-[1.02]'
+                                : 'text-gray-500 hover:text-white'
                                 }`}
                         >
                             Operator
@@ -79,8 +84,8 @@ export default function LoginPage() {
                         <button
                             onClick={() => setActiveTab('COMMANDER')}
                             className={`py-3 text-xs font-bold uppercase tracking-wider transition-all rounded ${activeTab === 'COMMANDER'
-                                    ? 'bg-heritage-red text-white shadow-lg shadow-heritage-red/20 scale-[1.02]'
-                                    : 'text-gray-500 hover:text-heritage-red'
+                                ? 'bg-heritage-red text-white shadow-lg shadow-heritage-red/20 scale-[1.02]'
+                                : 'text-gray-500 hover:text-heritage-red'
                                 }`}
                         >
                             Commander
@@ -122,8 +127,8 @@ export default function LoginPage() {
                             type="submit"
                             disabled={isLoading}
                             className={`w-full py-4 rounded-lg font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2 transition-all group ${activeTab === 'COMMANDER'
-                                    ? 'bg-heritage-red hover:bg-[#b3161a] text-white shadow-[0_0_20px_rgba(225,28,33,0.3)]'
-                                    : 'bg-white hover:bg-gray-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.15)]'
+                                ? 'bg-heritage-red hover:bg-[#b3161a] text-white shadow-[0_0_20px_rgba(225,28,33,0.3)]'
+                                : 'bg-white hover:bg-gray-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.15)]'
                                 }`}
                         >
                             {isLoading ? (
@@ -139,7 +144,7 @@ export default function LoginPage() {
                     <div className="text-center">
                         <p className="text-[10px] text-gray-600 font-mono">
                             UNAUTHORIZED ACCESS IS PROHIBITED BY LAW.<br />
-                            SESSION ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                            SESSION ID: {sessionId || 'INITIALIZING...'}
                         </p>
                     </div>
                 </div>

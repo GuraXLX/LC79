@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
 
@@ -8,12 +7,12 @@ const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export default function EngineHealth() {
     const vehicleId = "default-vehicle-id"; // In a real app, this would come from context or URL
-    const { data: health, error } = useSWR(`/api/service-horizon/${vehicleId}`, fetcher, {
+    const { data: health } = useSWR(`/api/service-horizon/${vehicleId}`, fetcher, {
         fallbackData: {
             oilLifePercent: 82,
             avgCorrugation: "4.2",
             kmSinceService: 1840,
-            predictedServiceDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+            predictedServiceDate: '2024-06-01T12:00:00.000Z',
             daysRemaining: 45,
             status: 'HEALTHY'
         }
@@ -87,7 +86,7 @@ export default function EngineHealth() {
                                         style={{ width: `${(Number(health?.avgCorrugation) * 10)}%` }}
                                     ></div>
                                 </div>
-                                <p className="text-[10px] mt-2 opacity-40">Heavy vibrations detected during "Plantation Track" segments. Accelerated bush/bearing wear anticipated.</p>
+                                <p className="text-[10px] mt-2 opacity-40">Heavy vibrations detected during &quot;Plantation Track&quot; segments. Accelerated bush/bearing wear anticipated.</p>
                             </div>
 
                             <div className="pt-4 border-t border-white/5 grid grid-cols-2 gap-4">
