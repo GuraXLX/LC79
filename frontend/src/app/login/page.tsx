@@ -101,7 +101,7 @@ export default function LoginPage() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder={activeTab === 'COMMANDER' ? "kushan@offroad.lk" : "udaya@offroad.lk"}
+                                    placeholder={activeTab === 'COMMANDER' ? "kushan@tuff79.com" : "udaya@tuff79.lk"}
                                     className="w-full bg-black border border-white/10 rounded-lg py-4 pl-12 pr-4 text-white focus:outline-none focus:border-white/40 focus:ring-1 focus:ring-white/20 transition-all placeholder:text-gray-700 font-mono text-sm"
                                     required
                                 />
