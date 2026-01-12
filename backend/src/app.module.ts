@@ -7,6 +7,8 @@ import { OcrModule } from './ocr/ocr.module';
 import { ServiceHorizonModule } from './service-horizon/service-horizon.module';
 import { FuelService } from './fuel/fuel.service';
 import { TripService } from './trip/trip.service';
+import { VehiclesModule } from './vehicles/vehicles.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { TripService } from './trip/trip.service';
     SupabaseModule,
     OcrModule,
     ServiceHorizonModule,
+    VehiclesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, FuelService, TripService],

@@ -16,6 +16,8 @@ const ocr_module_1 = require("./ocr/ocr.module");
 const service_horizon_module_1 = require("./service-horizon/service-horizon.module");
 const fuel_service_1 = require("./fuel/fuel.service");
 const trip_service_1 = require("./trip/trip.service");
+const vehicles_module_1 = require("./vehicles/vehicles.module");
+const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +28,8 @@ exports.AppModule = AppModule = __decorate([
             supabase_module_1.SupabaseModule,
             ocr_module_1.OcrModule,
             service_horizon_module_1.ServiceHorizonModule,
+            vehicles_module_1.VehiclesModule,
+            users_module_1.UsersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, fuel_service_1.FuelService, trip_service_1.TripService],

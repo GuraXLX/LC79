@@ -209,3 +209,24 @@ h4 {
   opacity: 0.4;
   animation: pulse-slow 2s infinite;
 }
+
+@keyframes fog-flow {
+  0% {
+    background-position: 0 0;
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    background-position: 100% 0;
+    opacity: 0.3;
+  }
+}
+
+.animate-fog {
+  animation: fog-flow 20s linear infinite;
+  background-size: 200% 100%;
+}

@@ -30,9 +30,11 @@ export default function LoginPage() {
         <div className="min-h-screen bg-[#050505] flex flex-col md:flex-row font-sans overflow-hidden">
 
             {/* Left Panel - Visuals */}
-            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('/login-bg.png')] bg-cover bg-center">
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
-                <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20"></div>
+            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('/login-bg.png')] bg-cover bg-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10"></div>
+                {/* Animated Fog Layer */}
+                <div className="absolute inset-0 bg-[url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png')] animate-fog opacity-30 mix-blend-screen z-0"></div>
+                <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 z-10"></div>
 
                 <div className="relative z-10 h-full flex flex-col justify-between p-12 text-white">
                     <div className="animate-fade-in-down">
