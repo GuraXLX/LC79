@@ -100,6 +100,9 @@ export default function FleetDashboard() {
               <Link href="/settings" className="px-4 py-2 border border-white/10 rounded hover:bg-white/10 transition-all text-white flex items-center gap-2">
                 <Settings size={18} /> <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Settings</span>
               </Link>
+              <Link href="/driver" className="px-4 py-2 bg-blue-900/50 border border-blue-500/30 rounded hover:bg-blue-900/80 transition-all text-blue-200 flex items-center gap-2">
+                <Car size={18} /> <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Driver View (Demo)</span>
+              </Link>
               <Link href="/vehicle/add" className="bg-heritage-red hover:bg-[#b3161a] text-white px-6 py-3 rounded font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(225,28,33,0.3)]">
                 <Plus size={18} /> {t('addVehicle')}
               </Link>
