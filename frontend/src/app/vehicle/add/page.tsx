@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, Car, Hash, Calendar, Upload, User } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AddVehicle() {
     const router = useRouter();
@@ -38,6 +39,26 @@ export default function AddVehicle() {
         setLoading(true);
 
         try {
+            let profile_photo_url = '';
+
+            // 1. Upload Image if exists
+            if (imageFile) {
+                const fileExt = imageFile.name.split('.').pop();
+                const fileName = `${formData.vin}-${Date.now()}.${fileExt}`;
+                const { data, error } = await supabase.storage
+                    .from('vehicle-photos')
+                    .upload(fileName, imageFile);
+
+                if (error) throw error;
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('vehicle-photos')
+                    .getPublicUrl(fileName);
+
+                profile_photo_url = publicUrl;
+            }
+
+            // 2. Create Vehicle
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/vehicles`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -46,7 +67,8 @@ export default function AddVehicle() {
                     model_type: `${formData.make} ${formData.model}`,
                     vin: formData.vin,
                     license_plate: formData.license_plate,
-                    assigned_driver_id: formData.assigned_driver_id || null
+                    assigned_driver_id: formData.assigned_driver_id || null,
+                    profile_photo_url: profile_photo_url || null,
                 })
             });
 
