@@ -30,15 +30,30 @@ export default function SettingsPage() {
         );
     }
 
-    const handleCreateUser = (e: React.FormEvent) => {
+    const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate API
-        setTimeout(() => {
-            setLoading(false);
-            alert(`Account created for ${newUser.email} as ${newUser.role}`);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: newUser.email,
+                    role: newUser.role,
+                    name: newUser.email.split('@')[0], // Extract name from email
+                })
+            });
+
+            if (!res.ok) throw new Error('Failed to create account');
+
+            alert(`✅ Account created successfully for ${newUser.email}`);
             setNewUser({ email: '', role: 'OPERATOR' });
-        }, 1200);
+        } catch (error) {
+            console.error(error);
+            alert('❌ Error creating account. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
