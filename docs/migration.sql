@@ -113,6 +113,19 @@ CREATE TABLE IF NOT EXISTS "Trip" (
     "total_weight_kg" FLOAT
 );
 
+-- VEHICLE PARTS / MODIFICATIONS
+CREATE TABLE IF NOT EXISTS "VehiclePart" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "vehicle_id" UUID REFERENCES "Vehicle"("id") ON DELETE CASCADE,
+    "name" TEXT NOT NULL,
+    "category" TEXT, -- e.g., 'Suspension', 'Lighting', 'Performance'
+    "brand" TEXT,
+    "cost_lkr" FLOAT DEFAULT 0,
+    "installed_at" TIMESTAMPTZ DEFAULT NOW(),
+    "status" TEXT DEFAULT 'INSTALLED', -- INSTALLED, PLANNED, REMOVED
+    "notes" TEXT
+);
+
 -- Convert Trip to a hypertable if TimescaleDB is installed
 -- SELECT create_hypertable('"Trip"', 'start_time');
 
