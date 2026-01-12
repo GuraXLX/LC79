@@ -12,7 +12,7 @@ COPY . .
 
 RUN npx prisma generate
 
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build
 
 FROM node:18-alpine
 
