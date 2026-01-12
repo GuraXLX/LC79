@@ -32,13 +32,18 @@ CREATE TABLE IF NOT EXISTS "User" (
 CREATE TABLE IF NOT EXISTS "Vehicle" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "nickname" TEXT,
+    "make" TEXT NOT NULL DEFAULT 'Toyota',
+    "model" TEXT NOT NULL DEFAULT 'Land Cruiser',
+    "year" INTEGER DEFAULT 2024,
     "vin" TEXT UNIQUE NOT NULL,
     "license_plate" TEXT UNIQUE NOT NULL,
-    "model_type" TEXT DEFAULT 'Dual Cab',
+    "image_url" TEXT,
+    "status" TEXT DEFAULT 'ACTIVE', -- ACTIVE, MAINTENANCE, SOLD
+    "current_driver_id" UUID REFERENCES "User"("id"),
     "gvm_limit_kg" FLOAT DEFAULT 3300,
     "curb_weight_kg" FLOAT DEFAULT 2200,
     "odometer_km" FLOAT DEFAULT 0,
-    "engine_hours" FLOAT DEFAULT 0
+    "fuel_level_percent" FLOAT DEFAULT 100
 );
 
 -- OCR RECORDS
