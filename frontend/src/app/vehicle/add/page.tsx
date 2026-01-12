@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Car, Hash, Calendar, Upload } from 'lucide-react';
+import { ArrowLeft, Save, Car, Hash, Calendar, Upload, User } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 
 export default function AddVehicle() {
@@ -12,15 +12,54 @@ export default function AddVehicle() {
     const [loading, setLoading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [users, setUsers] = useState<any[]>([]);
+
+    // Form State
+    const [formData, setFormData] = useState({
+        nickname: '',
+        make: 'Toyota',
+        model: '',
+        year: '',
+        license_plate: '',
+        vin: '',
+        assigned_driver_id: ''
+    });
+
+    useEffect(() => {
+        // Fetch Users for Driver Assignment
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users`)
+            .then(res => res.json())
+            .then(data => setUsers(data))
+            .catch(err => console.error("Failed to load users:", err));
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
+
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/vehicles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nickname: formData.nickname,
+                    model_type: `${formData.make} ${formData.model}`,
+                    vin: formData.vin,
+                    license_plate: formData.license_plate,
+                    assigned_driver_id: formData.assigned_driver_id || null
+                })
+            });
+
+            if (!res.ok) throw new Error('Failed to create vehicle');
+
+            alert('✅ Vehicle deployed successfully!');
             router.push('/');
-        }, 1500);
+        } catch (error) {
+            console.error(error);
+            alert('❌ Deployment failed.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -42,7 +81,33 @@ export default function AddVehicle() {
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('nickname')}</label>
-                            <input type="text" placeholder='e.g. "THE BEAST"' className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-black italic text-lg uppercase placeholder:not-italic placeholder:text-base placeholder:normal-case placeholder:font-normal" />
+                            <input
+                                type="text"
+                                placeholder='e.g. "THE BEAST"'
+                                required
+                                value={formData.nickname}
+                                onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
+                                className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-black italic text-lg uppercase placeholder:not-italic placeholder:text-base placeholder:normal-case placeholder:font-normal"
+                            />
+                        </div>
+
+                        {/* Driver Assignment */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-widest text-heritage-red flex items-center gap-2">
+                                <User size={14} /> Assign Commander / Driver
+                            </label>
+                            <select
+                                value={formData.assigned_driver_id}
+                                onChange={(e) => setFormData({ ...formData, assigned_driver_id: e.target.value })}
+                                className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-mono text-sm uppercase"
+                            >
+                                <option value="">-- NO DRIVER ASSIGNED --</option>
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.name} ({user.role})
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,7 +115,11 @@ export default function AddVehicle() {
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('make')}</label>
                                 <div className="relative">
                                     <Car className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                    <select className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none appearance-none font-bold uppercase">
+                                    <select
+                                        value={formData.make}
+                                        onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none appearance-none font-bold uppercase"
+                                    >
                                         <option>Toyota</option>
                                         <option>Land Rover</option>
                                         <option>Nissan</option>
@@ -60,7 +129,14 @@ export default function AddVehicle() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('model')}</label>
-                                <input type="text" placeholder="e.g. Land Cruiser 79" className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-bold uppercase placeholder:normal-case placeholder:font-normal" />
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Land Cruiser 79"
+                                    required
+                                    value={formData.model}
+                                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                                    className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-white focus:border-heritage-red outline-none font-bold uppercase placeholder:normal-case placeholder:font-normal"
+                                />
                             </div>
                         </div>
 
@@ -69,14 +145,41 @@ export default function AddVehicle() {
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('year')}</label>
                                 <div className="relative">
                                     <Calendar className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                    <input type="number" placeholder="2024" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase font-mono" />
+                                    <input
+                                        type="number"
+                                        placeholder="2024"
+                                        value={formData.year}
+                                        onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase font-mono"
+                                    />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('licensePlate')}</label>
                                 <div className="relative">
                                     <Hash className="absolute left-4 top-3.5 text-gray-600" size={16} />
-                                    <input type="text" placeholder="CAB-xxxx" className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase font-mono" />
+                                    <input
+                                        type="text"
+                                        placeholder="CAB-xxxx"
+                                        required
+                                        value={formData.license_plate}
+                                        onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase font-mono"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-widest text-gray-500">VIN (Chassis No)</label>
+                                <div className="relative">
+                                    <Hash className="absolute left-4 top-3.5 text-gray-600" size={16} />
+                                    <input
+                                        type="text"
+                                        placeholder="JTE-LC79..."
+                                        required
+                                        value={formData.vin}
+                                        onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:border-heritage-red outline-none font-bold uppercase font-mono"
+                                    />
                                 </div>
                             </div>
                         </div>
