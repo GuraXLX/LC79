@@ -1,0 +1,37 @@
+name: Server Maintenance
+on: 
+  workflow_dispatch:
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update and Upgrade System
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USER }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          script: |
+            echo "Starting System Update..."
+            export DEBIAN_FRONTEND=noninteractive
+            
+            # Update package list
+            apt-get update
+            
+            # Upgrade packages
+            apt-get upgrade -y
+            
+            # Clean up
+            apt-get autoremove -y
+            apt-get clean
+            
+            echo "System Update Complete!"
+            
+            # Check Disk and Memory usage
+            echo "--------------------------------"
+            echo "Disk Usage:"
+            df -h /
+            echo "--------------------------------"
+            echo "Memory Usage:"
+            free -h
