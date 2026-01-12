@@ -24,6 +24,12 @@ jobs:
           envs: NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY
           command_timeout: 30m
           script: |
+            # Setup Swap to prevent OOM
+            if [ ! -f /swapfile ]; then
+               curl -o setup_swap.sh https://raw.githubusercontent.com/GuraXLX/LC79/main/setup_swap.sh
+               bash setup_swap.sh
+            fi
+
             # Only clone if the directory doesn't exist
             if [ ! -d "/root/lc79-vms" ]; then
               git clone https://github.com/GuraXLX/LC79.git /root/lc79-vms
