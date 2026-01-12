@@ -30,10 +30,15 @@ export default function LoginPage() {
         <div className="min-h-screen bg-[#050505] flex flex-col md:flex-row font-sans overflow-hidden">
 
             {/* Left Panel - Visuals */}
-            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('/login-bg.png')] bg-cover bg-center overflow-hidden">
+            <div className="relative w-full md:w-1/2 lg:w-3/5 bg-[url('/login-bg.png')] bg-cover bg-center overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10"></div>
-                {/* Animated Fog Layer */}
-                <div className="absolute inset-0 bg-[url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png')] animate-fog opacity-30 mix-blend-screen z-0"></div>
+
+                {/* Visual Sunray/Dust Animation - Localized to the right side */}
+                <div className="absolute top-0 right-0 bottom-0 w-3/5 overflow-hidden z-0 opacity-60 mix-blend-overlay pointer-events-none">
+                    <div className="absolute inset-0 bg-[url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png')] animate-fog bg-repeat-x w-[200%]"></div>
+                    <div className="absolute inset-0 bg-gradient-to-l from-[#ffaa00] to-transparent opacity-20 mix-blend-color-dodge"></div>
+                </div>
+
                 <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 z-10"></div>
 
                 <div className="relative z-10 h-full flex flex-col justify-between p-12 text-white">
