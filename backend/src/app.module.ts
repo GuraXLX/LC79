@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
 import { OcrModule } from './ocr/ocr.module';
 import { ServiceHorizonModule } from './service-horizon/service-horizon.module';
+import { FuelService } from './fuel/fuel.service';
+import { TripService } from './trip/trip.service';
 
 @Module({
   imports: [
@@ -14,6 +16,6 @@ import { ServiceHorizonModule } from './service-horizon/service-horizon.module';
     ServiceHorizonModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FuelService, TripService],
 })
 export class AppModule { }

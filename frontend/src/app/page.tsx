@@ -120,6 +120,12 @@ export default function Dashboard() {
               QUICK MODULES
             </h3>
             <div className="grid grid-cols-2 gap-4">
+              {isCommander && (
+                <Link href="/commander" className="p-4 bg-heritage-red/10 rounded border border-heritage-red/30 hover:bg-heritage-red hover:text-white transition-all group col-span-2 text-center">
+                  <p className="text-[10px] mono uppercase">Commander Console</p>
+                  <p className="font-bold text-lg italic">STRATEGIC OVERWATCH</p>
+                </Link>
+              )}
               <Link href="/payload" className="p-4 bg-white/5 rounded border border-white/10 hover:border-high-vis-yellow transition-all group">
                 <p className="text-[10px] mono opacity-50 group-hover:text-high-vis-yellow transition-colors">GVM SYS</p>
                 <p className="font-bold text-sm">Payload Scientist</p>
