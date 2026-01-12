@@ -5,7 +5,7 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Controller('vehicles')
 export class VehiclesController {
-  constructor(private readonly vehiclesService: VehiclesService) {}
+  constructor(private readonly vehiclesService: VehiclesService) { }
 
   @Post()
   create(@Body() createVehicleDto: CreateVehicleDto) {
@@ -19,16 +19,16 @@ export class VehiclesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.vehiclesService.findOne(+id);
+    return this.vehiclesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVehicleDto: UpdateVehicleDto) {
-    return this.vehiclesService.update(+id, updateVehicleDto);
+    return this.vehiclesService.update(id, updateVehicleDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.vehiclesService.remove(+id);
+    return this.vehiclesService.remove(id);
   }
 }
