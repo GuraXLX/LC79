@@ -34,12 +34,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (email.includes('commander')) {
             setRole('COMMANDER');
             setUser({ id: 'cmd-01', email });
+            router.push('/');
         } else {
             setRole('OPERATOR');
             setUser({ id: 'opr-01', email });
+            router.push('/driver');
         }
-
-        router.push('/');
     };
 
     const logout = () => {
