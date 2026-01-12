@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Car, Users, Fuel, FileText, Settings, Globe } from 'lucide-react';
 import Link from 'next/link';
@@ -43,7 +43,14 @@ const VEHICLES = [
 export default function FleetDashboard() {
   const { t, language, setLanguage } = useLanguage();
   const { user, role, logout } = useAuth();
-  const [vehicles] = useState(VEHICLES);
+  const [vehicles, setVehicles] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/vehicles`)
+      .then(res => res.json())
+      .then(data => setVehicles(data))
+      .catch(err => console.error(err));
+  }, []);
 
   const toggleLanguage = () => {
     setLanguage(language === 'EN' ? 'SI' : 'EN');
@@ -135,16 +142,16 @@ export default function FleetDashboard() {
             className="group relative bg-[#121212] border border-white/10 rounded-lg overflow-hidden hover:border-heritage-red/50 transition-all"
           >
             {/* Vehicle Image - Hero */}
-            <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${v.image})` }}>
+            <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${v.image || 'https://images.unsplash.com/photo-1594235372071-7d12f45ea07e?q=80&w=2669&auto=format&fit=crop'})` }}>
               <div className="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent"></div>
               <div className="absolute top-4 left-4">
                 <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${v.status === 'ACTIVE' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'}`}>
-                  {v.status}
+                  {v.status || 'ACTIVE'}
                 </span>
               </div>
               <div className="absolute bottom-4 left-6">
-                <h2 className="text-2xl font-black italic uppercase tracking-tight">{v.nickname}</h2>
-                <p className="text-xs font-mono opacity-70">{v.year} {v.make} {v.model}</p>
+                <h2 className="text-2xl font-black italic uppercase tracking-tight">{v.nickname || 'Unknown'}</h2>
+                <p className="text-xs font-mono opacity-70">{v.year} {v.model_type}</p>
               </div>
             </div>
 
@@ -154,13 +161,13 @@ export default function FleetDashboard() {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-[10px] font-mono opacity-40 uppercase">{t('licensePlate')}</p>
-                  <p className="font-bold font-mono">{v.plate}</p>
+                  <p className="font-bold font-mono">{v.license_plate}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-mono opacity-40 uppercase">{t('assignedDriver')}</p>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-white/20"></div>
-                    <p className="font-bold">{v.driver}</p>
+                    <div className={`w-2 h-2 rounded-full ${v.assigned_driver ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <p className="font-bold">{v.assigned_driver ? v.assigned_driver.name : 'UNASSIGNED'}</p>
                   </div>
                 </div>
               </div>
@@ -169,17 +176,17 @@ export default function FleetDashboard() {
               <div className="space-y-3">
                 <div className="flex justify-between text-xs">
                   <span className="font-mono opacity-50">{t('fuelLevel')}</span>
-                  <span className="font-bold">{v.fuel}%</span>
+                  <span className="font-bold">{v.fuel_logs?.[0]?.liters ? 'Recorded' : 'N/A'}</span>
                 </div>
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className={`h-full ${v.fuel < 20 ? 'bg-heritage-red' : 'bg-white'}`}
-                    style={{ width: `${v.fuel}%` }}
+                    className="h-full bg-heritage-red"
+                    style={{ width: '100%' }} // Placeholder until we have IOT fuel data
                   ></div>
                 </div>
                 <div className="flex justify-between items-center text-[10px] pt-1">
                   <span className="opacity-40">{t('nextServiceIn')}</span>
-                  <span className="text-high-vis-yellow font-bold font-mono">{v.nextService}</span>
+                  <span className="text-high-vis-yellow font-bold font-mono">{v.odometer_km ? `${(v.odometer_km + 5000).toLocaleString()} km` : 'N/A'}</span>
                 </div>
               </div>
 
