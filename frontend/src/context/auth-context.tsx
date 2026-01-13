@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 type UserRole = 'COMMANDER' | 'OPERATOR';
@@ -26,6 +26,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
+    // Check for persisted session on mount
+    useEffect(() => {
+        const storedUser = localStorage.getItem('vanguard_user');
+        const storedRole = localStorage.getItem('vanguard_role');
+        if (storedUser && storedRole) {
+            setUser(JSON.parse(storedUser));
+            setRole(storedRole as UserRole);
+        }
+    }, []);
+
     const login = async (email: string, _pass: string) => {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/check-email`, {
@@ -39,6 +49,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 setRole(data.role);
                 setUser({ id: data.id, email: email });
 
+                // Persist session
+                localStorage.setItem('vanguard_user', JSON.stringify({ id: data.id, email: email }));
+                localStorage.setItem('vanguard_role', data.role);
+
                 if (data.role === 'COMMANDER') {
                     router.push('/');
                 } else {
@@ -50,10 +64,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 if (email.includes('commander')) {
                     setRole('COMMANDER');
                     setUser({ id: 'cmd-01', email });
+                    localStorage.setItem('vanguard_user', JSON.stringify({ id: 'cmd-01', email }));
+                    localStorage.setItem('vanguard_role', 'COMMANDER');
                     router.push('/');
                 } else {
                     setRole('OPERATOR');
                     setUser({ id: 'opr-01', email });
+                    localStorage.setItem('vanguard_user', JSON.stringify({ id: 'opr-01', email }));
+                    localStorage.setItem('vanguard_role', 'OPERATOR');
                     router.push('/driver');
                 }
             }
@@ -63,10 +81,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (email.includes('commander')) {
                 setRole('COMMANDER');
                 setUser({ id: 'cmd-01', email });
+                localStorage.setItem('vanguard_user', JSON.stringify({ id: 'cmd-01', email }));
+                localStorage.setItem('vanguard_role', 'COMMANDER');
                 router.push('/');
             } else {
                 setRole('OPERATOR');
                 setUser({ id: 'opr-01', email });
+                localStorage.setItem('vanguard_user', JSON.stringify({ id: 'opr-01', email }));
+                localStorage.setItem('vanguard_role', 'OPERATOR');
                 router.push('/driver');
             }
         }
@@ -75,6 +97,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const logout = () => {
         setUser(null);
         setRole('OPERATOR');
+        localStorage.removeItem('vanguard_user');
+        localStorage.removeItem('vanguard_role');
         router.push('/login');
     };
 
