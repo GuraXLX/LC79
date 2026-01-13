@@ -13,6 +13,9 @@ export default function LoginPage() {
     const [sessionId, setSessionId] = useState('');
 
     useEffect(() => {
+        // Clear any existing session when login page loads
+        localStorage.removeItem('vanguard_user');
+        localStorage.removeItem('vanguard_role');
         // eslint-disable-next-line
         setSessionId(Math.random().toString(36).substr(2, 9).toUpperCase());
     }, []);
