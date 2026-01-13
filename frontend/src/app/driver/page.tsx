@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Fuel, Wrench, AlertTriangle, Car, Map, User, Bell } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
+import { useAuth } from '@/context/auth-context';
 
 // Mock Data for Driver View until API connected
 const MOCK_DRIVER_VEHICLE = {
@@ -18,6 +19,7 @@ const MOCK_DRIVER_VEHICLE = {
 
 export default function DriverDashboard() {
     const { t } = useLanguage();
+    const { logout } = useAuth();
     const [status, setStatus] = useState('ON_DUTY'); // ON_DUTY, REST, OFF
 
     return (
@@ -47,8 +49,8 @@ export default function DriverDashboard() {
                         key={s}
                         onClick={() => setStatus(s)}
                         className={`py-2 text-[10px] font-bold uppercase tracking-wider rounded transition-all ${status === s
-                                ? 'bg-heritage-red text-white shadow-lg'
-                                : 'text-gray-500 hover:text-white'
+                            ? 'bg-heritage-red text-white shadow-lg'
+                            : 'text-gray-500 hover:text-white'
                             }`}
                     >
                         {s.replace('_', ' ')}
@@ -131,9 +133,9 @@ export default function DriverDashboard() {
                     <Map size={20} />
                     <span className="text-[9px] font-bold uppercase tracking-wider">Trips</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
+                <button onClick={logout} className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
                     <User size={20} />
-                    <span className="text-[9px] font-bold uppercase tracking-wider">Profile</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider">Logout</span>
                 </button>
             </div>
 
