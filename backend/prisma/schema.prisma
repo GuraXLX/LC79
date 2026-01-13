@@ -1,8 +1,8 @@
 // This schema is designed for PostgreSQL + TimescaleDB for the LC79 VMS
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -11,18 +11,18 @@ generator client {
 
 /// --- USER & RBAC ---
 
-enum Role {
-  COMMANDER
-  OPERATOR
-}
+// enum Role {
+//   COMMANDER
+//   OPERATOR
+// }
 
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
   name          String
   password_hash String
-  role          Role      @default(OPERATOR)
-  preferences   Json?     // Used for "Glove Mode", "Night Mode", "Currency Toggle"
+  role          String    @default("OPERATOR")
+  preferences   String?     // Used for "Glove Mode", "Night Mode", "Currency Toggle" (JSON string)
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   scans         OCRRecord[]
@@ -50,35 +50,36 @@ model Vehicle {
   fuel_logs         FuelLog[]
   service_logs      ServiceLog[]
   trips             Trip[]
+  modifications     Modification[]
 }
 
 /// --- V-EYE OCR MODULE ---
 
-enum OCRCategory {
-  FUEL_RECEIPT
-  REVENUE_LICENSE
-  INSURANCE_POLICY
-  EMISSION_CERT
-  SERVICE_INVOICE
-  PART_ORDER
-}
+// enum OCRCategory {
+//   FUEL_RECEIPT
+//   REVENUE_LICENSE
+//   INSURANCE_POLICY
+//   EMISSION_CERT
+//   SERVICE_INVOICE
+//   PART_ORDER
+// }
 
-enum SyncStatus {
-  PENDING
-  SYNCED
-  FAILED
-}
+// enum SyncStatus {
+//   PENDING
+//   SYNCED
+//   FAILED
+// }
 
 model OCRRecord {
   id                String      @id @default(uuid())
   vehicle_id        String
   user_id           String
-  category          OCRCategory
+  category          String
   image_url         String      // Local path or Cloud storage
   raw_text          String?     // The full unparsed OCR blob
-  metadata          Json?       // Structured data: { "total_lkr": 5000, "liters": 12.5, "expiry": "2024-01-01" }
+  metadata          String?       // Structured data: { "total_lkr": 5000, "liters": 12.5, "expiry": "2024-01-01" } (JSON string)
   confidence_score  Float       @default(0.0)
-  sync_status       SyncStatus  @default(PENDING)
+  sync_status       String  @default("PENDING")
   processed_at      DateTime?
   created_at        DateTime    @default(now())
 
@@ -145,4 +146,17 @@ model Trip {
   
   vehicle           Vehicle  @relation(fields: [vehicle_id], references: [id])
   user              User     @relation(fields: [user_id], references: [id])
+}
+
+model Modification {
+  id           String   @id @default(uuid())
+  vehicle_id   String
+  name         String
+  category     String   // SUSPENSION, ARMOR, RECOVERY, LIGHTING, etc.
+  brand        String?
+  cost         Float    @default(0)
+  installed_at DateTime?
+  notes        String?
+  
+  vehicle      Vehicle  @relation(fields: [vehicle_id], references: [id])
 }
