@@ -48,5 +48,8 @@ jobs:
             # Stop any existing containers to free up ports
             docker-compose down
             
+            # Force remove any leftover containers
+            docker rm -f lc79-vms-backend-1 lc79-vms-frontend-1 lc79-vms-caddy-1 2>/dev/null || true
+            
             # Rebuild and start the containers
             docker-compose up -d --build
