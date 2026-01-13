@@ -66,54 +66,55 @@ export default function FleetDashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white font-sans p-6 md:p-12">
+    <main className="min-h-screen bg-[#050505] text-white font-sans p-4 sm:p-6 lg:p-12">
       {/* Header */}
-      <header className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 border-b border-white/10 pb-6 gap-6 md:gap-0">
-        <div className="flex items-center gap-6">
+      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 lg:mb-12 border-b border-white/10 pb-6 gap-6 w-full">
+        <div className="flex items-center gap-4 sm:gap-6">
           {/* Logo */}
-          <div className="relative w-16 h-16">
+          <div className="relative w-12 h-12 sm:w-16 sm:h-16">
             <Image src="/logo.png" alt="Vanguard Logo" fill className="object-contain" />
           </div>
           <div>
-            <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-1 relative">
-              {t('appTitle')} <span className="text-heritage-red text-2xl absolute top-0 -right-6">®</span>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black italic tracking-tighter mb-1 relative">
+              {t('appTitle')} <span className="text-heritage-red text-lg sm:text-xl lg:text-2xl absolute top-0 -right-4 sm:-right-6">®</span>
             </h1>
-            <div className="flex items-center gap-3">
-              <p className="font-mono text-[10px] md:text-xs text-heritage-red font-bold uppercase tracking-[0.3em] pl-1">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <p className="font-mono text-[9px] sm:text-[10px] lg:text-xs text-heritage-red font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em]">
                 {t('appSubtitle')}
               </p>
-              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${role === 'COMMANDER' ? 'bg-heritage-red text-white' : 'bg-blue-600 text-white'}`}>
+              <span className={`px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap ${role === 'COMMANDER' ? 'bg-heritage-red text-white' : 'bg-blue-600 text-white'}`}>
                 {role === 'COMMANDER' ? t('commanderMode') : t('operatorView')}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 w-full md:w-auto justify-center md:justify-end">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 w-full lg:w-auto justify-start lg:justify-end flex-wrap">
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded hover:bg-white/5 transition-all text-xs font-mono font-bold"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 border border-white/10 rounded hover:bg-white/5 transition-all text-[10px] sm:text-xs font-mono font-bold"
           >
-            <Globe size={14} /> {language === 'EN' ? 'සිංහල' : 'ENGLISH'}
+            <Globe size={12} className="sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">{language === 'EN' ? 'සිංහල' : 'ENGLISH'}</span>
           </button>
 
           <button
             onClick={logout}
-            className="px-4 py-2 border border-white/10 rounded hover:bg-red-900/20 hover:text-red-400 transition-all text-xs font-mono font-bold uppercase"
+            className="px-3 sm:px-4 py-2 border border-white/10 rounded hover:bg-red-900/20 hover:text-red-400 transition-all text-[10px] sm:text-xs font-mono font-bold uppercase"
           >
-            Log Out
+            <span className="hidden sm:inline">Log Out</span>
+            <span className="sm:hidden">Exit</span>
           </button>
 
           {role === 'COMMANDER' && (
             <>
-              <Link href="/settings" className="px-4 py-2 border border-white/10 rounded hover:bg-white/10 transition-all text-white flex items-center gap-2">
-                <Settings size={18} /> <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Settings</span>
+              <Link href="/settings" className="px-3 sm:px-4 py-2 border border-white/10 rounded hover:bg-white/10 transition-all text-white flex items-center gap-1.5 sm:gap-2">
+                <Settings size={16} className="sm:w-[18px] sm:h-[18px]" /> <span className="hidden lg:inline text-xs font-bold uppercase tracking-wider">Settings</span>
               </Link>
-              <Link href="/driver" className="px-4 py-2 bg-blue-900/50 border border-blue-500/30 rounded hover:bg-blue-900/80 transition-all text-blue-200 flex items-center gap-2">
-                <Car size={18} /> <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Driver View (Demo)</span>
+              <Link href="/driver" className="hidden sm:flex px-3 sm:px-4 py-2 bg-blue-900/50 border border-blue-500/30 rounded hover:bg-blue-900/80 transition-all text-blue-200 items-center gap-1.5 sm:gap-2">
+                <Car size={16} className="sm:w-[18px] sm:h-[18px]" /> <span className="hidden lg:inline text-xs font-bold uppercase tracking-wider">Driver View</span>
               </Link>
-              <Link href="/vehicle/add" className="bg-heritage-red hover:bg-[#b3161a] text-white px-6 py-3 rounded font-bold uppercase tracking-widest flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(225,28,33,0.3)]">
-                <Plus size={18} /> {t('addVehicle')}
+              <Link href="/vehicle/add" className="bg-heritage-red hover:bg-[#b3161a] text-white px-4 sm:px-6 py-2 sm:py-3 rounded font-bold uppercase tracking-wider sm:tracking-widest flex items-center gap-1.5 sm:gap-2 transition-all shadow-[0_0_20px_rgba(225,28,33,0.3)] text-[10px] sm:text-xs">
+                <Plus size={16} className="sm:w-[18px] sm:h-[18px]" /> <span className="hidden sm:inline">{t('addVehicle')}</span><span className="sm:hidden">Add</span>
               </Link>
             </>
           )}
@@ -121,7 +122,7 @@ export default function FleetDashboard() {
       </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 lg:mb-12">
         <div className="bg-white/5 border border-white/10 p-6 rounded hover:border-white/20 transition-all">
           <Car className="text-heritage-red mb-2" size={24} />
           <p className="text-2xl font-black">02</p>
@@ -145,7 +146,7 @@ export default function FleetDashboard() {
       </div>
 
       {/* Vehicle Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
         {vehicles.map((v) => (
           <motion.div
             key={v.id}
