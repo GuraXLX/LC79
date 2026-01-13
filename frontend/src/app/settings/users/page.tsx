@@ -36,7 +36,7 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/users`);
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
@@ -56,7 +56,7 @@ export default function UserManagement() {
         if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/users/${id}`, {
                 method: 'DELETE',
             });
             if (res.ok) {
@@ -72,7 +72,7 @@ export default function UserManagement() {
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newUser)
@@ -93,7 +93,7 @@ export default function UserManagement() {
     const toggleRole = async (user: UserData) => {
         const newRole = user.role === 'COMMANDER' ? 'OPERATOR' : 'COMMANDER';
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/${user.id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/users/${user.id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ role: newRole })

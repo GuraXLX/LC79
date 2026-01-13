@@ -53,7 +53,7 @@ export default function FleetDashboard() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/vehicles`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/vehicles`)
       .then(res => res.json())
       .then(data => setVehicles(data))
       .catch(err => console.error(err));
