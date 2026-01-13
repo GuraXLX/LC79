@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
   reactStrictMode: true,
+  turbopack: {}, // Empty config to silence Turbopack warning
   async rewrites() {
     return [
       {
